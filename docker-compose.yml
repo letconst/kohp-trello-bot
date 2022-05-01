@@ -1,0 +1,20 @@
+version: '3.4'
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      network: host
+    image: kohp-trello-bot
+    container_name: kohp-trello-bot
+    env_file:
+      - .env
+      - .env.dev
+    network_mode: host
+    tty: true
+    volumes:
+      - /dev:/dev
+      - ./:/app
+      - /app/node_modules
+    ports:
+      - "3000:3000"
