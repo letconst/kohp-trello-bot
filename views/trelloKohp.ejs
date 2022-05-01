@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Trelloカード同期bot設定画面 - 天上宮殿の騎士</title>
+</head>
+<body>
+<% if (NODE_ENV === 'development') { %>
+    <form action="/trello-kohp/api-sandbox" method="POST">
+        <label for="url">
+            URL
+            <input type="text" name="url">
+        </label>
+        <label for="params">
+            パラメータ
+            <input type="text" name="params">
+        </label>
+        <label for="method">
+            メソッド
+            <select name="method">
+                <option value="GET">GET</option>
+                <option value="POST">POST</option>
+                <option value="PUT">PUT</option>
+                <option value="DELETE">DELETE</option>
+            </select>
+        </label>
+        <input type="submit" value="送信">
+    </form>
+<% } %>
+</body>
+</html>

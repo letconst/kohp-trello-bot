@@ -5,6 +5,8 @@ const { LISTEN_PORT } = process.env;
 
 const app = express();
 
+app.set('view engine', 'ejs');
+
 app.use(express.json());
 app.use('/', routes);
 
