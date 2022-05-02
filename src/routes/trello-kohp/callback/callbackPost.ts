@@ -26,7 +26,7 @@ const isValidData = (data: any): boolean => {
 }
 
 export const callbackPost = (req: express.Request, res: express.Response) => {
-    const data    = req.body;
+    const data: TrelloWebhook = req.body;
     const isValid = isValidData(data);
 
     if (!isValid) return;
