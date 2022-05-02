@@ -1,12 +1,12 @@
-import express  from 'express';
-import { get }  from './get';
-import { post } from './post';
+import express          from 'express';
+import { callbackGet }  from './callbackGet';
+import { callbackPost } from './callbackPost';
 
 const router = express.Router();
 
 router.use(express.json());
 
-router.get('/', get);
-router.post('/', post);
+router.get('/', callbackGet);
+router.post('/', callbackPost);
 
 export default router;

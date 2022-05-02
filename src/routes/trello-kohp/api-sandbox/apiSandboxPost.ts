@@ -18,8 +18,7 @@ const apiSandboxPost = async (req: express.Request, res: express.Response) => {
         params: params
     }
 
-    const tRes = await TrelloClient.instance.client.sendRequest(config as RequestConfig);
-    console.log(tRes);
+    await TrelloClient.instance.client.sendRequest(config as RequestConfig);
 
     res.sendStatus(200);
 }
