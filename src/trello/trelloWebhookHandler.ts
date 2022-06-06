@@ -1,5 +1,7 @@
-import Queue                                       from 'yocto-queue';
-import TrelloWebhook                               from '../types/trelloWebhook'
+import Queue            from '../utilities/Queue';
+import TrelloWebhook    from '../types/trelloWebhook'
+import webhookFunctions from './webhook';
+
 import { ALLOWED_TRANSLATION_KEYS, ALLOWED_TYPES } from '../constants/allowedTrelloAction'
 
 const { TRELLO_ID_MEMBER_BOT } = process.env;
@@ -7,9 +9,11 @@ const { TRELLO_ID_MEMBER_BOT } = process.env;
 export default class TrelloWebhookHandler {
     private static _instance: TrelloWebhookHandler;
 
-    private _actionQueue = new Queue<TrelloWebhook>();
+    private readonly _responseQueue = new Queue<TrelloWebhook>();
+    private _intervalObj!: NodeJS.Timer;
 
     private constructor() {
+        this.startCheckQueueInterval();
     }
 
     public static get instance(): TrelloWebhookHandler {
@@ -20,8 +24,8 @@ export default class TrelloWebhookHandler {
         return this._instance;
     }
 
-    public get actionQueue(): Queue<TrelloWebhook> {
-        return this._actionQueue;
+    public get responseQueue(): Queue<TrelloWebhook> {
+        return this._responseQueue;
     }
 
     /**
@@ -42,11 +46,32 @@ export default class TrelloWebhookHandler {
             return false;
 
         // typeがupdateCardの場合、特定のtranslationKeyのみ許可
-        if (!(action.type === 'updateCard' &&
-            ALLOWED_TRANSLATION_KEYS.includes(action.display.translationKey))) {
+        if (action.type === 'updateCard' &&
+            !ALLOWED_TRANSLATION_KEYS.includes(action.display.translationKey)) {
             return false;
         }
 
         return true;
+    }
+
+    private startCheckQueueInterval() {
+        this._intervalObj = setInterval(() => {
+            if (this._responseQueue.size === 0) return;
+
+            this.execQueuedResponse();
+            clearInterval(this._intervalObj);
+        }, 5000);
+    }
+
+    private async execQueuedResponse() {
+        while (this._responseQueue.size > 0) {
+            const data = this._responseQueue.dequeue();
+
+            if (!data) continue;
+
+            await webhookFunctions(data);
+        }
+
+        this.startCheckQueueInterval();
     }
 }

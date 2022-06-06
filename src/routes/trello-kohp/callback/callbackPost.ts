@@ -12,7 +12,7 @@ export const callbackPost = (req: express.Request, res: express.Response) => {
         return;
     }
 
-    TrelloWebhookHandler.instance.actionQueue.enqueue(data);
+    TrelloWebhookHandler.instance.responseQueue.enqueue(data);
 
     console.log(req.body);
     res.sendStatus(200);
